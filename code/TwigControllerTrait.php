@@ -1,5 +1,7 @@
 <?php
 
+namespace Azt3k\SS\Twig;
+
 trait TwigControllerTrait
 {
 
