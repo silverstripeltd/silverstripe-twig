@@ -27,7 +27,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Azt3k\\SS\\Twig": "src/"
+            "Azt3k\\SS\\Twig\\": "src/"
         }
     }
 }
