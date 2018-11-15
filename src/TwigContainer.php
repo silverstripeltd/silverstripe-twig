@@ -2,7 +2,7 @@
 
 namespace Azt3k\SS\Twig;
 
-class TwigContainer extends Pimple
+class TwigContainer extends \Pimple
 {
     /**
      * Default config of properties

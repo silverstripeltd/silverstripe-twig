@@ -31,12 +31,12 @@ trait TwigControllerTrait
         if(!$this->action) $this->action = 'index';
 
         if (!$this->hasAction($this->action)) {
-            $this->httpError(404, "The action '$this->action' does not exist in class $this->class");
+            $this->httpError(404, "The action '$this->action' does not exist in class " . get_class($this));
         }
 
         // run & init are manually disabled, because they create infinite loops and other dodgy situations
         if (!$this->checkAccessAction($this->action) || in_array(strtolower($this->action), array('run', 'init'))) {
-            return $this->httpError(403, "Action '$this->action' isn't allowed on class $this->class");
+            return $this->httpError(403, "Action '$this->action' isn't allowed on class " . get_class($this));
         }
 
         if ($this->hasMethod($this->action)) {
@@ -120,19 +120,23 @@ trait TwigControllerTrait
         } elseif ($this->template) {
             $templates = $this->template;
         } else {
+
             // Add action-specific templates for inheritance chain
-            $parentClass = $this->class;
+            $parentClass = get_class($this);
             if ($action && $action != 'index') {
-                $parentClass = $this->class;
-                while ($parentClass != "Controller") {
-                    $templates[] = strtok($parentClass,'_') . '_' . $action;
+                $parentClass = get_class($this);
+                while ($parentClass != 'Controller') {
+                    $classParts = explode('\\', $parentClass);
+                    $templates[] = $classParts[count($classParts) - 1] . '_' . $action;
                     $parentClass = get_parent_class($parentClass);
                 }
             }
+
             // Add controller templates for inheritance chain
-            $parentClass = $this->class;
-            while ($parentClass != "Controller") {
-                $templates[] = strtok($parentClass,'_');
+            $parentClass = get_class($this);
+            while ($parentClass != 'SilverStripe\Control\Controller') {
+                $classParts = explode('\\', $parentClass);
+                $templates[] = $classParts[count($classParts) - 1];
                 $parentClass = get_parent_class($parentClass);
             }
 

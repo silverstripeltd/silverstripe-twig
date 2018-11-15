@@ -1,10 +1,6 @@
 <?php
 
-if (version_compare(PHP_VERSION, '5.4.0', '>=')) {
-
-    require_once __DIR__ . '/code/TwigControllerTrait.php';
-
-}
+use Azt3k\SS\Twig\TwigContainer;
 
 // If haml is available allow it to be used
 if (class_exists('HamlSilverStripeContainer')) {
@@ -34,5 +30,4 @@ if (class_exists('HamlSilverStripeContainer')) {
             '.twig'
         )
     ));
-
 }
