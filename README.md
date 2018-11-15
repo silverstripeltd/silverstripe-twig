@@ -1,8 +1,8 @@
-#Twig templates for SilverStripe 3.1
+#Twig templates for SilverStripe 4
 
 ##Overview
 
-SilverStripe Twig enables the use of the Twig templating engine in SilverStripe 3.1.
+SilverStripe Twig enables the use of the Twig templating engine in SilverStripe 4
 
 If you are not familiar with Twig, check out the [docs](http://twig.sensiolabs.org/).
 
@@ -39,28 +39,6 @@ For example, for page of PageType `Page`. If there is a `Page.twig` template in 
 
 Twig rendering is enabled by extending the functionality of your SilverStripe controller. This can be done in two ways depending on what version of PHP you have.
 
-####PHP 5.3
-
-If you want to use twig for all controllers that extend `Page_Controller`, set up is as follows:
-
-`Page.php`
-
-```php
-class Page_Controller extends TwigContentController
-{
-}
-```
-
-If you want to use twig in a `Controller`, set up is as follows:
-
-`MyController.php`
-
-```php
-class MyController extends TwigController
-{
-}
-```
-
 ####PHP 5.4
 
 The PHP 5.3 classes above are actually auto-generated from a trait. To use the trait add a `use` statement in your controller as follows:
@@ -68,7 +46,7 @@ The PHP 5.3 classes above are actually auto-generated from a trait. To use the t
 ```php
 class Page_Controller extends ContentController
 {
-	use TwigControllerTrait;	
+	use TwigControllerTrait;
 }
 ```
 or:
@@ -76,7 +54,7 @@ or:
 ```php
 class MyController extends Controller
 {
-	use TwigControllerTrait;	
+	use TwigControllerTrait;
 }
 ```
 

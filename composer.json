@@ -1,6 +1,6 @@
 {
     "name": "azt3k/silverstripe-twig",
-    "type": "silverstripe-module",
+    "type": "silverstripe-vendormodule",
     "description": "Allows use of twig in SilverStripe 4",
     "license": "MIT",
     "authors": [
@@ -18,7 +18,7 @@
     "require": {
         "silverstripe/framework": "^4",
         "silverstripe/admin": "^1",
-        "twig/twig": "~1.12",
+        "twig/twig": "~2",
         "pimple/pimple": "~1.0"
     },
     "require-dev": {
