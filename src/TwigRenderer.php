@@ -1,0 +1,171 @@
+<?php
+
+namespace Azt3k\SS\Twig;
+
+trait TwigRenderer {
+
+    /**
+     * [__get description]
+     * @param  [type] $name [description]
+     * @return [type]       [description]
+     */
+    public function __get($name) {
+
+        if ($name == 'dic') {
+            return $this->dic = new TwigContainer;
+        } else {
+            return parent::__get($name);
+        }
+    }
+
+    /**
+     * [__isset description]
+     * @param  [type]  $name [description]
+     * @return boolean       [description]
+     */
+    public function __isset($name) {
+
+        return $this->hasMethod($name) ? false : true;
+    }
+
+    /**
+     * Overrides the renderWith method for DOs
+     * @param  [type] $templates    [description]
+     * @param  [type] $customFields [description]
+     * @return [type]               [description]
+     */
+    public function renderWith($templates, $customFields = null) {
+
+        $data = ($this->customisedObject) ? $this->customisedObject : $this;
+
+        if (is_array($customFields) || $customFields instanceof ViewableData) {
+            $data = $data->customise($customFields);
+        }
+
+        if (!is_array($templates)) {
+            $templates = array($templates);
+        }
+
+        return $this->renderTwig($templates, $data);
+    }
+
+    /**
+     * [render description]
+     * @param  [type] $params [description]
+     * @return [type]         [description]
+     */
+    public function render($params = null) {
+
+        $obj = ($this->customisedObj) ? $this->customisedObj : $this;
+        if ($params) {
+            $obj = $this->customise($params);
+        }
+
+        $action = method_exists($this, 'getAction')
+            ? $this->getAction()
+            : null;
+
+        return $this->renderTwig(
+            $this->getTemplateList($action),
+            $obj
+        );
+    }
+
+    protected function renderTwig($templates, $context) {
+
+        return $this->getTwigTemplate($templates)->render(array(
+            $this->dic['twig.controller_variable_name'] => $context
+        ));
+    }
+
+    public function customise($params) {
+
+        if (is_array($params)) {
+            foreach ($params as $key => $value) {
+                $this->$key = $value;
+            }
+        }
+
+        return $this;
+    }
+
+    protected function getTwigTemplate($templates) {
+
+        $loader = $this->dic['twig.loader'];
+        $extensions = $this->dic['twig.extensions'];
+        foreach ($templates as $value) {
+            foreach ($extensions as $extension) {
+                if ($loader->exists($value . $extension)) {
+                    return $this->dic['twig']->loadTemplate($value . $extension);
+                }
+            }
+        }
+        throw new \InvalidArgumentException("No templates for " . implode(', ', $templates) . " exist");
+    }
+
+    /**
+     * [buildTemplatesFromClassName description]
+     * @param  [type] $className [description]
+     * @param  [type] $action    [description]
+     * @return [type]            [description]
+     */
+    protected function buildTemplatesFromClassName($className, $action = null) {
+
+        // init templates
+        $templates = [];
+
+        // Add action-specific templates for inheritance chain
+        if ($action && $action != 'index') {
+            $parentClass = $className;
+            while (
+                $parentClass != 'SilverStripe\Control\Controller' &&
+                $parentClass != 'SilverStripe\ORM\DataObject'
+            ) {
+                $classParts = explode('\\', $parentClass);
+                $templates[] = $classParts[count($classParts) - 1] . '_' . $action;
+                $parentClass = get_parent_class($parentClass);
+            }
+        }
+
+        // Add controller templates for inheritance chain
+        $parentClass = $className;
+        while (
+            $parentClass != 'SilverStripe\Control\Controller' &&
+            $parentClass != 'SilverStripe\ORM\DataObject'
+        ) {
+            $classParts = explode('\\', $parentClass);
+            $templates[] = $classParts[count($classParts) - 1];
+            $parentClass = get_parent_class($parentClass);
+        }
+
+        return $templates;
+    }
+
+    /**
+     * [getTemplateList description]
+     * @param  [type] $action [description]
+     * @return [type]         [description]
+     */
+    protected function getTemplateList($action = null) {
+
+        // Hard-coded templates
+        if ($this->templates[$action]) {
+            $templates = $this->templates[$action];
+        } elseif ($this->templates['index']) {
+            $templates = $this->templates['index'];
+        } elseif ($this->template) {
+            $templates = $this->template;
+        } else {
+
+            // build template list
+            // get_class and $this->className freturn different things
+            $templates = array_unique(array_merge(
+                $this->buildTemplatesFromClassName(get_class($this), $action),
+                $this->buildTemplatesFromClassName($this->ClassName, $action)
+            ));
+        }
+
+        return $templates;
+    }
+
+}
