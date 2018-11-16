@@ -118,6 +118,7 @@ trait TwigRenderer {
         if ($action && $action != 'index') {
             $parentClass = $className;
             while (
+                $parentClass &&
                 $parentClass != 'SilverStripe\Control\Controller' &&
                 $parentClass != 'SilverStripe\ORM\DataObject'
             ) {
@@ -130,6 +131,7 @@ trait TwigRenderer {
         // Add controller templates for inheritance chain
         $parentClass = $className;
         while (
+            $parentClass &&
             $parentClass != 'SilverStripe\Control\Controller' &&
             $parentClass != 'SilverStripe\ORM\DataObject'
         ) {
@@ -158,7 +160,7 @@ trait TwigRenderer {
         } else {
 
             // build template list
-            // get_class and $this->className freturn different things
+            // get_class and $this->className return different things sometimes
             $templates = array_unique(array_merge(
                 $this->buildTemplatesFromClassName(get_class($this), $action),
                 $this->buildTemplatesFromClassName($this->ClassName, $action)

@@ -4,6 +4,8 @@ namespace Azt3k\SS\Twig;
 
 trait TwigController {
 
+    use TwigRenderer;
+
     public function __get($name)
     {
         if ($name == 'dic') {
