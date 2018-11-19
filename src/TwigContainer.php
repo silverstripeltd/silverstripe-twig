@@ -73,7 +73,8 @@ class TwigContainer extends \Pimple
                 \SilverStripe\Core\Config\Config::inst()->get('SilverStripe\View\SSViewer', 'theme') . '/' .
                 'twig'
             ),
-            BASE_PATH . '/app/templates/twig'
+            BASE_PATH . '/app/templates/twig',
+            BASE_PATH . '/node_modules'
         ];
 
         // add paths
@@ -115,6 +116,7 @@ class TwigContainer extends \Pimple
     public static function addShared($name, $shared) {
         self::$shared[] = array($name, $shared);
     }
+
     /**
      * Allows the addition to the default config by the user
      * @param array $config The extending config
