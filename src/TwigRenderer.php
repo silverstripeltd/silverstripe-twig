@@ -43,7 +43,7 @@ trait TwigRenderer {
         }
 
         if (!is_array($templates)) {
-            $templates = array($templates);
+            $templates = [$templates];
         }
 
         return $this->renderTwig($templates, $data);
@@ -72,7 +72,7 @@ trait TwigRenderer {
     }
 
     protected function renderTwig($templates, $context) {
-
+        // if ($context->Form) print_r($context->Form->renderWith('CMSSecurity_login'));
         return $this->getTwigTemplate($templates)->render(array(
             $this->dic['twig.controller_variable_name'] => $context
         ));
@@ -93,8 +93,19 @@ trait TwigRenderer {
 
         $loader = $this->dic['twig.loader'];
         $extensions = $this->dic['twig.extensions'];
+
         foreach ($templates as $value) {
+
+            // catches scenarios when a template is supplied as:
+            // Array
+            // (
+            //     [type] => Includes
+            //     [0] => SilverStripe\Security\Security_login
+            // )
+            if (is_array($value)) $value = $value[0];
+
             foreach ($extensions as $extension) {
+
                 if ($loader->exists($value . $extension)) {
                     return $this->dic['twig']->loadTemplate($value . $extension);
                 }
