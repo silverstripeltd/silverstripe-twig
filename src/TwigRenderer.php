@@ -151,11 +151,11 @@ trait TwigRenderer {
     protected function getTemplateList($action = null) {
 
         // Hard-coded templates
-        if ($this->templates[$action]) {
+        if (!empty($this->templates[$action])) {
             $templates = $this->templates[$action];
-        } elseif ($this->templates['index']) {
+        } elseif (!empty($this->templates['index'])) {
             $templates = $this->templates['index'];
-        } elseif ($this->template) {
+        } elseif (!empty($this->template)) {
             $templates = $this->template;
         } else {
 
