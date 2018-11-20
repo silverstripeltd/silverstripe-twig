@@ -73,7 +73,8 @@ class TwigContainer extends \Pimple
                 \SilverStripe\Core\Config\Config::inst()->get('SilverStripe\View\SSViewer', 'theme') . '/' .
                 'twig'
             ),
-            BASE_PATH . '/app/templates/twig',
+            BASE_PATH . '/app/twig',
+            BASE_PATH . '/app/templates',
             BASE_PATH . '/node_modules'
         ];
 
