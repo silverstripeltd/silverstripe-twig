@@ -58,7 +58,7 @@ class MyController extends Controller
 }
 ```
 
-###Accessing your Controller in twig
+### Accessing your Controller in twig
 
 By default twig makes your controller (and therefore your dataRecord) available in your template by the variable `c`.
 
@@ -80,6 +80,15 @@ By default twig makes your controller (and therefore your dataRecord) available 
 	<li>No pages</li>
 {% endfor %}
 </ul>
+```
+
+### Rendering HTML Generating Controller Methods
+
+- SS4 changes the `__toString` behaviour for `ViewableData` objects to use `static::class` rather than `$this->forTemplate()`
+- We need to dump the raw HTML value or we get escaped output
+
+```jinja
+{{ c.Form.forTemplate|raw }}
 ```
 
 ###Practical usage example
