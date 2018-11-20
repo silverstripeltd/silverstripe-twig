@@ -72,10 +72,9 @@ trait TwigRenderer {
     }
 
     protected function renderTwig($templates, $context) {
-        // if ($context->Form) print_r($context->Form->renderWith('CMSSecurity_login'));
-        return $this->getTwigTemplate($templates)->render(array(
+        return $this->getTwigTemplate($templates)->render([
             $this->dic['twig.controller_variable_name'] => $context
-        ));
+        ]);
     }
 
     public function customise($params) {
