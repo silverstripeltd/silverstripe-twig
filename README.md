@@ -1,14 +1,14 @@
-#Twig templates for SilverStripe 4
+# Twig templates for SilverStripe 4
 
-##Overview
+## Overview
 
 SilverStripe Twig enables the use of the Twig templating engine in SilverStripe 4
 
 If you are not familiar with Twig, check out the [docs](http://twig.sensiolabs.org/).
 
-##Installation
+## Installation
 
-###Composer
+### Composer
 
 Create or edit a `composer.json` file in the root of your SilverStripe project, and make sure the following is present.
 
@@ -23,9 +23,9 @@ Create or edit a `composer.json` file in the root of your SilverStripe project, 
 
 After completing this step, navigate in Terminal or similar to the SilverStripe root directory and run `composer install` or `composer update` depending on whether or not you have composer already in use.
 
-##Getting started
+## Getting started
 
-###What to name and where to put your templates
+### What to name and where to put your templates
 
 Create a folder called `twig` in your current theme. This is where twig will look for your templates. By default Twig expects your templates to be named with the `.twig` extension, but can be easily configured to look for others (see `twig.extensions`).
 
@@ -35,11 +35,11 @@ It builds a ranked list of candidate templates based on the class name of the cu
 
 For example, for page of PageType `Page`. If there is a `Page.twig` template in the twig folder it will use that.
 
-###How to enable twig
+### How to enable twig
 
 Twig rendering is enabled by extending the functionality of your SilverStripe controller. This can be done in two ways depending on what version of PHP you have.
 
-####PHP 5.4
+#### PHP 5.4
 
 The PHP 5.3 classes above are actually auto-generated from a trait. To use the trait add a `use` statement in your controller as follows:
 
@@ -91,7 +91,7 @@ By default twig makes your controller (and therefore your dataRecord) available 
 {{ c.Form.forTemplate|raw }}
 ```
 
-###Practical usage example
+### Practical usage example
 
 Achieving similar functionality to SilverStripe's `$Layout` variable is easy with twig.
 
@@ -132,7 +132,7 @@ Twig has the concepts of `extends` and `blocks` which enable flexible template r
 </html>
 ```
 
-###Configuration
+### Configuration
 
 SilverStripe Twig uses a dependency injection container (an extension of `Pimple`) to allow configuration and DI for all objects used.
 
@@ -164,6 +164,28 @@ TwigContainer::extendConfig(array(
     'twig.controller_variable_name' => 'controller'
 ));
 ```
+### Namespaced paths
+
+Support for twig namesapces can be enabled by adding a `twig.template_namespaced_paths` array to the config. For example.
+```
+TwigContainer::extendConfig([
+    "twig.template_namespaced_paths" => [
+        BASE_PATH . '/node_modules/path/to/namespaced/twig/files' => 'namespace',
+		BASE_PATH . '/node_modules/path/to/namespaced/twig/files' => 'anotherNamespace',
+    ],
+]);
+```
+This will allow the use of twig files that depend on namespaced paths, for example
+`ExampleThirdPartyModule.twig`
+```
+{% extends "@namespace/component.twig" %}
+{% from "@anotherNamespace/form/form.twig" import form %}
+{% from "@anotherNamespace/field/field.twig" import field %}
+{% from "@anotherNamespace/input/input.twig" import input %}
+
+```
+More info about twig namespaces can be found at
+[https://symfony.com/doc/current/templating/namespaced_paths.html](https://symfony.com/doc/current/templating/namespaced_paths.html)
 
 Any service provided by SilverStripe Twig can be accessed by instantiating the Container.
 
@@ -174,14 +196,14 @@ $dic['twig']->loadTemplate('template.twig')->render();
 
 See [Pimple](http://pimple.sensiolabs.org/) for more information.
 
-##Using Twig and Haml together
+## Using Twig and Haml together
 SilverStripe twig supports the use of haml through the [SilverStripe haml](https://github.com/camspiers/silverstripe-haml) module.
 
 Install the SilverStripe haml module and you are ready to go.
 
 You can now name your files `.haml` (though you don't have to).
 
-###Usage
+### Usage
 
 To get Twig to process your file as `Haml` add:
 
@@ -210,9 +232,9 @@ Example:
 ```
 
 
-##Contributing
+## Contributing
 
-###Code guidelines
+### Code guidelines
 
 This project follows the standards defined in:
 
@@ -220,6 +242,6 @@ This project follows the standards defined in:
 * [PSR-2](https://github.com/pmjones/fig-standards/blob/psr-1-style-guide/proposed/PSR-2-advanced.md)
 
 ---
-##License
+## License
 
 SilverStripe Twig is released under the [MIT license](http://camspiers.mit-license.org/)
