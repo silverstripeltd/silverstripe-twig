@@ -59,7 +59,13 @@ class TwigContainer extends \Pimple
         });
 
         $this['twig.loader'] = $this->share(function ($c) {
-            return new $c['twig.loader_class']($c['twig.template_paths']);
+            $twigLoader = new $c['twig.loader_class']($c['twig.template_paths']);
+            if (isset($c['twig.template_namespaced_paths'])) {
+                foreach ($c['twig.template_namespaced_paths'] as $path => $namespace) {
+                    $twigLoader->addPath($path, $namespace);
+                }
+            }
+            return $twigLoader;
         });
 
         // Dynamic props
