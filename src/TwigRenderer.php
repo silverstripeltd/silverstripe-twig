@@ -97,6 +97,7 @@ trait TwigRenderer {
 
         $loader = $this->dic['twig.loader'];
         $extensions = $this->dic['twig.extensions'];
+        $templates = $this->extend('ModifyTwigTemplates', $templates)[0];
 
         foreach ($templates as $value) {
 
@@ -107,6 +108,11 @@ trait TwigRenderer {
             //     [0] => SilverStripe\Security\Security_login
             // )
             if (is_array($value)) $value = $value[0];
+            
+            $ret = $this->extend('FilterTwigTemplates', $value)[0];
+            if($ret === false){
+                continue;
+            }
 
             foreach ($extensions as $extension) {
 
