@@ -97,7 +97,12 @@ trait TwigRenderer {
 
         $loader = $this->dic['twig.loader'];
         $extensions = $this->dic['twig.extensions'];
-        $templates = $this->extend('ModifyTwigTemplates', $templates)[0];
+        $ret = $this->extend('ModifyTwigTemplates', $templates);
+        if(is_array($ret) && count($ret) > 0) $templates = $ret[0];
+
+        if(!is_array($templates) || count($templates) == 0) {
+            throw new \InvalidArgumentException("No templates available, perhaps the extension if borked ");
+        }
 
         foreach ($templates as $value) {
 
@@ -108,9 +113,9 @@ trait TwigRenderer {
             //     [0] => SilverStripe\Security\Security_login
             // )
             if (is_array($value)) $value = $value[0];
-            
-            $ret = $this->extend('FilterTwigTemplates', $value)[0];
-            if($ret === false){
+
+            $ret = $this->extend('FilterTwigTemplates', $value);
+            if(is_array($ret) && count($ret) && $ret[0] === false){
                 continue;
             }
 
@@ -130,7 +135,7 @@ trait TwigRenderer {
      * @param  [type] $action    [description]
      * @return [type]            [description]
      */
-    protected function buildTemplatesFromClassName($className, $action = null) {
+    public function buildTemplatesFromClassName($className, $action = null) {
 
         // init templates
         $templates = [];
