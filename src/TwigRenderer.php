@@ -113,10 +113,10 @@ trait TwigRenderer {
             //     [0] => SilverStripe\Security\Security_login
             // )
             if (is_array($value)) $value = $value[0];
-
-            $ret = $this->extend('FilterTwigTemplates', $value);
-            if(is_array($ret) && count($ret) && $ret[0] === false){
-                continue;
+            
+            $ret = $this->extend('ModifyTwigTemplate', $value);
+            if(is_array($ret) && count($ret) && is_string($ret[0])){
+                $value = $ret[0];
             }
 
             foreach ($extensions as $extension) {
