@@ -16,7 +16,10 @@ class TwigContainer extends \Pimple
         'twig.extensions' => array(
             '.twig'
         ),
-        'twig.controller_variable_name' => 'c'
+        'twig.controller_variable_name' => 'c',
+        "twig.globals"  => [
+            'imagepath' => 'asdasd'
+        ]
     ];
 
     /**
@@ -51,6 +54,14 @@ class TwigContainer extends \Pimple
                 $envOptions
             );
 
+            if (isset($c['twig.globals'])) {
+                if (isset($c['twig.globals'])) {
+                    foreach ($c['twig.globals'] as $global => $path) {
+                        $twig->addGlobal($global, $path);
+                    }
+                }
+            }
+
             if (isset($envOptions['debug']) && $envOptions['debug'])
                 $twig->addExtension(new \Twig_Extension_Debug());
 
@@ -65,6 +76,8 @@ class TwigContainer extends \Pimple
                     $twigLoader->addPath($path, $namespace);
                 }
             }
+
+
             return $twigLoader;
         });
 
