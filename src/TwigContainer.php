@@ -19,6 +19,9 @@ class TwigContainer extends \Pimple
         'twig.controller_variable_name' => 'c',
         "twig.globals"  => [
             'imagepath' => 'asdasd'
+        ],
+        "twig.module_template_paths" => [
+
         ]
     ];
 
@@ -77,7 +80,6 @@ class TwigContainer extends \Pimple
                 }
             }
 
-
             return $twigLoader;
         });
 
@@ -96,6 +98,16 @@ class TwigContainer extends \Pimple
             BASE_PATH . '/app/templates',
             BASE_PATH . '/node_modules'
         ];
+
+        // code to generate paths for templates from modules
+        // $modules = \SilverStripe\Core\Manifest\ModuleLoader::inst()
+        //     ->getManifest()->getModules();
+        // foreach ($modules as $module) {
+        //     $possiblePaths[] = $module->getPath() . '/templates';
+        // }
+
+        // modules inject template paths via the following property
+        $possiblePaths = array_merge(self::$config['twig.module_template_paths'], $possiblePaths);
 
         // add paths
         foreach ($possiblePaths as $path)
