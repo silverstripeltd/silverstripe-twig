@@ -107,7 +107,7 @@ class TwigContainer extends \Pimple
         // }
 
         // modules inject template paths via the following property
-        $possiblePaths = array_merge(self::$config['twig.module_template_paths'], $possiblePaths);
+        $possiblePaths = array_merge($possiblePaths, self::$config['twig.module_template_paths']);
 
         // add paths
         foreach ($possiblePaths as $path)
