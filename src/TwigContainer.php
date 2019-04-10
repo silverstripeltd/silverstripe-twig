@@ -2,6 +2,10 @@
 
 namespace Azt3k\SS\Twig;
 
+use SilverStripe\Core\ClassInfo;
+use SilverStripe\View\ViewableData;
+use SilverStripe\View\TemplateGlobalProvider;
+
 class TwigContainer extends \Pimple
 {
     /**
@@ -58,12 +62,13 @@ class TwigContainer extends \Pimple
             );
 
             if (isset($c['twig.globals'])) {
-                if (isset($c['twig.globals'])) {
-                    foreach ($c['twig.globals'] as $global => $path) {
-                        $twig->addGlobal($global, $path);
-                    }
+                foreach ($c['twig.globals'] as $global => $path) {
+                    $twig->addGlobal($global, $path);
                 }
             }
+
+            // add the Silverstripe globals to the g. namespace
+            $twig->addGlobal('g', new TwigSSGlobals());
 
             if (isset($envOptions['debug']) && $envOptions['debug'])
                 $twig->addExtension(new \Twig_Extension_Debug());
