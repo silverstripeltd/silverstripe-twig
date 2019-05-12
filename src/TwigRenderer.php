@@ -1,8 +1,14 @@
 <?php
 
 namespace Azt3k\SS\Twig;
+use \SilverStripe\View\Requirements;
 
 trait TwigRenderer {
+
+    /**
+     * @var bool
+     */
+    protected $includeRequirements = true;
 
     /**
      * [__get description]
@@ -77,9 +83,15 @@ trait TwigRenderer {
     }
 
     protected function renderTwig($templates, $context) {
-        return $this->getTwigTemplate($templates)->render([
+        $render = $this->getTwigTemplate($templates)->render([
             $this->dic['twig.controller_variable_name'] => $context
         ]);
+
+        // inject any 'required' assets in the output, e.g. userforms JS
+        if ($this->includeRequirements)
+            $render = Requirements::includeInHTML($render);
+
+        return $render;
     }
 
     public function customise($params) {
