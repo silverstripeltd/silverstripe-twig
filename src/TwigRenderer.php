@@ -160,8 +160,8 @@ trait TwigRenderer {
                 $parentClass != 'SilverStripe\Control\Controller' &&
                 $parentClass != 'SilverStripe\ORM\DataObject'
             ) {
-                $classParts = explode('\\', $parentClass);
-                $templates[] = $classParts[count($classParts) - 1] . '_' . $action;
+                $classPath = str_replace('\\', '/', $parentClass);
+                $templates[] = $classPath . '_' . $action;
                 $parentClass = get_parent_class($parentClass);
             }
         }
@@ -173,8 +173,8 @@ trait TwigRenderer {
             $parentClass != 'SilverStripe\Control\Controller' &&
             $parentClass != 'SilverStripe\ORM\DataObject'
         ) {
-            $classParts = explode('\\', $parentClass);
-            $templates[] = $classParts[count($classParts) - 1];
+            $classPath = str_replace('\\', '/', $parentClass);
+            $templates[] = $classPath;
             $parentClass = get_parent_class($parentClass);
         }
 
@@ -196,7 +196,6 @@ trait TwigRenderer {
         } elseif (!empty($this->template)) {
             $templates = $this->template;
         } else {
-
             // build template list
             // get_class and $this->className return different things sometimes
             $templates = array_unique(array_merge(

@@ -82,6 +82,20 @@ By default twig makes your controller (and therefore your dataRecord) available 
 </ul>
 ```
 
+### Accessing Silverstripe global variables
+
+Silverstripe global functions/variables will be available on the variable `g`.
+
+```jinja
+{% if g.CurrentMember %}
+ {{ g.CurrentMember.ID }}
+{% endif %}
+```
+
+```jinja
+<a href="{{ g.admin_url }}">Login</a>
+```
+
 ### Rendering HTML Generating Controller Methods
 
 - SS4 changes the `__toString` behaviour for `ViewableData` objects to use `static::class` rather than `$this->forTemplate()`
