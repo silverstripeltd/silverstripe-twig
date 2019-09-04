@@ -5,7 +5,6 @@ namespace Azt3k\SS\Twig;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\View\TemplateGlobalProvider;
 use SilverStripe\Control\Email\Email;
-use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTP;
 use SilverStripe\Core\Convert;
 use SilverStripe\Core\Environment;
@@ -17,6 +16,7 @@ use SilverStripe\View\Requirements;
 use SilverStripe\View\SSViewer;
 use SilverStripe\View\ThemeResourceLoader;
 use SilverStripe\View\ViewableData;
+use SilverStripe\Control\Director;
 use Swift_Message;
 use Swift_MimePart;
 
@@ -24,6 +24,10 @@ use Swift_MimePart;
 class TwigEmail extends Email
 {
     use TwigRenderer;
+
+    public function AbsoluteLink($path) {
+        return trim(Director::absoluteBaseURL(), '/') . $path;
+    }
 
     /**
      * Render the email
