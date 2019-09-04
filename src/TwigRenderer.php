@@ -204,6 +204,14 @@ trait TwigRenderer {
             ));
         }
 
+        // if the current class has a getHTMLTemplate method try it
+        if (method_exists($this, 'getHTMLTemplate')) {
+            $templates = array_unique(array_merge(
+                [$this->getHTMLTemplate()],
+                $templates
+            ));
+        }
+
         return $templates;
     }
 

@@ -1,0 +1,9 @@
+---
+Name: TwigInjector
+After:
+  - '#requestprocessors'
+  - '#coresecurity'
+---
+SilverStripe\Core\Injector\Injector:
+  SilverStripe\Control\Email\Email:
+    class: Azt3k\SS\Twig\TwigEmail
