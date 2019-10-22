@@ -54,15 +54,23 @@ class TwigEmail extends Email
 
         // Do not interfere with emails styles
         Requirements::clear();
-        
+
+        // UserDefinedFormController sets the value 'Sender' on data as the current member
+        // when TwigRenderer kicks off the renderWith, it calls _set('Sender'),
+        // which calls setSender() - the method to set the email address to send to
+        $dat = $this->getData();
+        $sender = $dat['Sender'];
+        unset($dat['Sender']);
+        $dat['Member'] = $sender;
+
         // Render plain part
         if ($plainTemplate && !$plainPart) {
-            $plainPart = $this->renderWith($plainTemplate, $this->getData());
+            $plainPart = $this->renderWith($plainTemplate, $dat);
         }
 
         // Render HTML part, either if sending html email, or a plain part is lacking
         if (!$htmlPart && $htmlTemplate && (!$plainOnly || empty($plainPart))) {
-            $htmlPart = $this->renderWith($htmlTemplate, $this->getData());
+            $htmlPart = $this->renderWith($htmlTemplate, $dat);
         }
 
         // Plain part fails over to generated from html
@@ -71,7 +79,7 @@ class TwigEmail extends Email
             $htmlPartObject = DBField::create_field('HTMLFragment', $htmlPart);
             $plainPart = $htmlPartObject->Plain();
         }
-        
+
         // Rendering is finished
         Requirements::restore();
 
