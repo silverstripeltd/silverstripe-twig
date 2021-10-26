@@ -54,15 +54,19 @@ class TwigEmail extends Email
 
         // Do not interfere with emails styles
         Requirements::clear();
-        
+
+        // Remove Sender key from the data
+        $tplData = $this->getData();
+        unset($tplData['Sender']);
+
         // Render plain part
         if ($plainTemplate && !$plainPart) {
-            $plainPart = $this->renderWith($plainTemplate, $this->getData());
+            $plainPart = $this->renderWith($plainTemplate, $tplData);
         }
 
         // Render HTML part, either if sending html email, or a plain part is lacking
         if (!$htmlPart && $htmlTemplate && (!$plainOnly || empty($plainPart))) {
-            $htmlPart = $this->renderWith($htmlTemplate, $this->getData());
+            $htmlPart = $this->renderWith($htmlTemplate, $tplData);
         }
 
         // Plain part fails over to generated from html
@@ -71,7 +75,7 @@ class TwigEmail extends Email
             $htmlPartObject = DBField::create_field('HTMLFragment', $htmlPart);
             $plainPart = $htmlPartObject->Plain();
         }
-        
+
         // Rendering is finished
         Requirements::restore();
 
