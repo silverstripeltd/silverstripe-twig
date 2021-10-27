@@ -57,7 +57,12 @@ class TwigEmail extends Email
 
         // Remove Sender key from the data
         $tplData = $this->getData();
-        unset($tplData['Sender']);
+        if (is_object($tplData)) {
+            unset($tplData->Sender);
+        }
+        if (is_array($tplData)) {
+            unset($tplData['Sender']);
+        }
 
         // Render plain part
         if ($plainTemplate && !$plainPart) {
