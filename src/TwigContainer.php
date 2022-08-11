@@ -49,7 +49,7 @@ class TwigContainer extends Container
         parent::__construct();
 
         //Shared services
-        $this['twig'] = $this->share(function ($c) {
+        $this['twig'] = function ($c) {
 
             $envOptions = array_merge(
                 ['cache' => $c['twig.compilation_cache']],
@@ -75,9 +75,9 @@ class TwigContainer extends Container
 
             return $twig;
 
-        });
+        };
 
-        $this['twig.loader'] = $this->share(function ($c) {
+        $this['twig.loader'] = function ($c) {
             $twigLoader = new $c['twig.loader_class']($c['twig.template_paths']);
             if (isset($c['twig.template_namespaced_paths'])) {
                 foreach ($c['twig.template_namespaced_paths'] as $path => $namespace) {
@@ -86,7 +86,7 @@ class TwigContainer extends Container
             }
 
             return $twigLoader;
-        });
+        };
 
         // Dynamic props
         $this['twig.compilation_cache'] = TEMP_FOLDER . '/twig-cache';
@@ -132,7 +132,7 @@ class TwigContainer extends Container
         // Shared
         if (is_array(self::$shared))
             foreach (self::$shared as $value)
-                $this[$value[0]] = $this->share($value[1]);
+                $this[$value[0]] = $value[1];
 
     }
 
