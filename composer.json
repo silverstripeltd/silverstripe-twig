@@ -19,7 +19,7 @@
         "silverstripe/framework": "^4",
         "silverstripe/admin": "^1",
         "twig/twig": "~2",
-        "pimple/pimple": "~1"
+        "pimple/pimple": "~3"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.7",

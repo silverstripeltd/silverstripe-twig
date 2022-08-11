@@ -2,11 +2,11 @@
 
 namespace Azt3k\SS\Twig;
 
-use SilverStripe\Core\ClassInfo;
-use SilverStripe\View\ViewableData;
-use SilverStripe\View\TemplateGlobalProvider;
+use Pimple\Container;
+use Twig\Environment;
+use Twig\Extension\DebugExtension;
 
-class TwigContainer extends \Pimple
+class TwigContainer extends Container
 {
     /**
      * Default config of properties
@@ -56,7 +56,7 @@ class TwigContainer extends \Pimple
                 $c['twig.environment_options']
             );
 
-            $twig = new \Twig_Environment(
+            $twig = new Environment(
                 $c['twig.loader'],
                 $envOptions
             );
@@ -71,7 +71,7 @@ class TwigContainer extends \Pimple
             $twig->addGlobal('g', new TwigSSGlobals());
 
             if (isset($envOptions['debug']) && $envOptions['debug'])
-                $twig->addExtension(new \Twig_Extension_Debug());
+                $twig->addExtension(new DebugExtension());
 
             return $twig;
 
