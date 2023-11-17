@@ -2,6 +2,7 @@
 
 namespace Azt3k\SS\Twig;
 use \SilverStripe\View\Requirements;
+use \SilverStripe\View\ViewableData;
 
 trait TwigRenderer {
 

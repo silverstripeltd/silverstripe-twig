@@ -94,10 +94,18 @@ class TwigContainer extends Container
         // create some paths to check
         $actualPaths = [];
         $possiblePaths = [
-            (
-                THEMES_PATH . '/' .
-                \SilverStripe\Core\Config\Config::inst()->get('SilverStripe\View\SSViewer', 'theme') . '/' .
-                'twig'
+            str_replace(
+                '//',
+                '',
+                (
+                    THEMES_PATH . '/' .
+                    \SilverStripe\Core\Config\Config::inst()->get(
+                        'SilverStripe\View\SSViewer',
+                        'theme'
+                    ) .
+                    '/' .
+                    'twig'
+                )
             ),
             BASE_PATH . '/app/twig',
             BASE_PATH . '/app/templates',
@@ -112,28 +120,39 @@ class TwigContainer extends Container
         // }
 
         // modules inject template paths via the following property
-        $possiblePaths = array_merge($possiblePaths, self::$config['twig.module_template_paths']);
+        $possiblePaths = array_merge(
+            $possiblePaths,
+            self::$config['twig.module_template_paths']
+        );
 
         // add paths
-        foreach ($possiblePaths as $path)
-            if (is_dir($path)) $actualPaths[] = $path;
+        foreach ($possiblePaths as $path) {
+            if (is_dir($path)) {
+                $actualPaths[] = $path;
+            }
+        }
 
         // add the paths to the conf
         $this['twig.template_paths'] = $actualPaths;
 
         // Default config
-        foreach (self::$config as $key => $value) $this[$key] = $value;
+        foreach (self::$config as $key => $value) {
+            $this[$key] = $value;
+        }
 
         // Extensions
-        if (is_array(self::$extensions))
-            foreach (self::$extensions as $value)
+        if (is_array(self::$extensions)) {
+            foreach (self::$extensions as $value) {
                 $this->extend($value[0], $value[1]);
+            }
+        }
 
         // Shared
-        if (is_array(self::$shared))
-            foreach (self::$shared as $value)
+        if (is_array(self::$shared)) {
+            foreach (self::$shared as $value) {
                 $this[$value[0]] = $value[1];
-
+            }
+        }
     }
 
     /**
@@ -160,8 +179,7 @@ class TwigContainer extends Container
      */
     public static function extendConfig($config) {
         if (is_array($config)) {
-            self::$config = array_merge(self::$config, $config);
+            self::$config = array_merge_recursive(self::$config, $config);
         }
     }
-
 }
