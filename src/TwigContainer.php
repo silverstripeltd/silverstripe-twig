@@ -21,12 +21,8 @@ class TwigContainer extends Container
             '.twig'
         ),
         'twig.controller_variable_name' => 'c',
-        "twig.globals"  => [
-            'imagepath' => 'asdasd'
-        ],
-        "twig.module_template_paths" => [
-
-        ]
+        "twig.globals"  => [],
+        "twig.module_template_paths" => []
     ];
 
     /**
