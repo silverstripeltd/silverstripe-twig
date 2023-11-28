@@ -117,8 +117,8 @@ class TwigContainer extends Container
 
         // modules inject template paths via the following property
         $possiblePaths = array_merge(
+            self::$config['twig.module_template_paths'],
             $possiblePaths,
-            self::$config['twig.module_template_paths']
         );
 
         // add paths
@@ -177,5 +177,23 @@ class TwigContainer extends Container
         if (is_array($config)) {
             self::$config = array_merge_recursive(self::$config, $config);
         }
+    }
+
+    /**
+     * gets the current config
+     * @return array the $config
+     */
+    public static function getConfig(): array
+    {
+        return self::$config;
+    }
+
+    /**
+     * sets the current config
+     * @param array $config the config
+     */
+    public static function setConfig(array $config)
+    {
+        self::$config = $config;
     }
 }
