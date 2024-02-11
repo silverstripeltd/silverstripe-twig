@@ -17,7 +17,7 @@
     ],
     "require": {
         "silverstripe/framework": "^4 || ^5",
-        "silverstripe/admin": "^1",
+        "silverstripe/admin": "^2",
         "twig/twig": "~2",
         "pimple/pimple": "~3"
     },
