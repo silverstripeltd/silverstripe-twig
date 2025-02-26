@@ -135,7 +135,11 @@ trait TwigRenderer {
             foreach ($extensions as $extension) {
 
                 if ($loader->exists($value . $extension)) {
-                    return $this->dic['twig']->loadTemplate($value . $extension);
+                    $twigEnv = $this->dic['twig'];
+                    $templateName = $value . $extension;
+                    $cls = $twigEnv->getTemplateClass($templateName);
+                    
+                    return $twigEnv->loadTemplate($cls, $value . $extension);
                 }
             }
         }
