@@ -5,7 +5,7 @@ namespace Azt3k\SS\Twig;
 use Pimple\Container;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
-use Twig\Loader\FilesystemLoader
+use Twig\Loader\FilesystemLoader;
 
 class TwigContainer extends Container
 {
