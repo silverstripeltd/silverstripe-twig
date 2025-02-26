@@ -13,7 +13,7 @@ class TwigContainer extends Container
      * @var array
      */
     protected static $config = [
-        'twig.loader_class' => 'Twig_Loader_Filesystem',
+        'twig.loader_class' => FilesystemLoader::class,
         'twig.environment_options' => array(
             'auto_reload' => true
         ),
