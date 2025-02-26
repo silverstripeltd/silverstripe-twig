@@ -1,8 +1,8 @@
-# Twig templates for SilverStripe 4
+# Twig templates for SilverStripe 5
 
 ## Overview
 
-SilverStripe Twig enables the use of the Twig templating engine in SilverStripe 4
+SilverStripe Twig enables the use of the Twig templating engine in SilverStripe 5
 
 If you are not familiar with Twig, check out the [docs](http://twig.sensiolabs.org/).
 
