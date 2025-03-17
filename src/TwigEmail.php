@@ -3,6 +3,9 @@
 namespace Azt3k\SS\Twig;
 
 use SilverStripe\Core\ClassInfo;
+use SilverStripe\Core\Config\Configurable;
+use SilverStripe\Core\Extensible;
+use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\View\TemplateGlobalProvider;
 use SilverStripe\Control\Email\Email;
 use SilverStripe\Control\HTTP;
@@ -19,8 +22,9 @@ use SilverStripe\View\ViewableData;
 use SilverStripe\Control\Director;
 use Swift_Message;
 use Swift_MimePart;
+use Symfony\Component\Mailer\MailerInterface;
 
-
+#[\AllowDynamicProperties]
 class TwigEmail extends Email
 {
     use TwigRenderer;
@@ -30,26 +34,46 @@ class TwigEmail extends Email
     }
 
     /**
-     * Render the email
+     * Over-ride the send function so that we can customise the
+     * rendering of the email.
+     *
+     * @return void
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
+     */
+    public function send(): void
+    {
+        $this->render();
+        Injector::inst()->get(MailerInterface::class)->send($this);
+    }
+
+    /**
+     * Render the email - this
      * @param bool $plainOnly Only render the message as plain text
      * @return $this
      */
-    public function render($plainOnly = false)
+    private function render($plainOnly = false)
     {
-        if ($existingPlainPart = $this->findPlainPart()) {
-            $this->getSwiftMessage()->detach($existingPlainPart);
-        }
-        unset($existingPlainPart);
 
-        // Respect explicitly set body
-        $htmlPart = $plainOnly ? null : $this->getBody();
-        $plainPart = $plainOnly ? $this->getBody() : null;
+        $htmlBody = $this->getHtmlBody();
+        $plainBody = $this->getTextBody();
 
         // Ensure we can at least render something
         $htmlTemplate = $this->getHTMLTemplate();
         $plainTemplate = $this->getPlainTemplate();
-        if (!$htmlTemplate && !$plainTemplate && !$plainPart && !$htmlPart) {
-            return $this;
+        if (!$htmlTemplate && !$plainTemplate && !$plainBody && !$htmlBody) {
+            return;
+        }
+
+        $htmlRender = null;
+        $plainRender = null;
+
+        if ($htmlBody && !$this->dataHasBeenSet) {
+            $htmlRender = $htmlBody;
+        }
+
+        if ($plainBody && !$this->dataHasBeenSet) {
+            $plainRender = $plainBody;
         }
 
         // Do not interfere with emails styles
@@ -64,47 +88,45 @@ class TwigEmail extends Email
             unset($tplData['Sender']);
         }
 
-        // Render plain part
-        if ($plainTemplate && !$plainPart) {
-            $plainPart = $this->renderWith($plainTemplate, $tplData);
+        // Render plain
+        if (!$plainRender && $plainTemplate) {
+            $plainRender = $this->renderWith($plainTemplate, $tplData)->Plain();
         }
 
-        // Render HTML part, either if sending html email, or a plain part is lacking
-        if (!$htmlPart && $htmlTemplate && (!$plainOnly || empty($plainPart))) {
-            $htmlPart = $this->renderWith($htmlTemplate, $tplData);
-        }
-
-        // Plain part fails over to generated from html
-        if (!$plainPart && $htmlPart) {
-            /** @var DBHTMLText $htmlPartObject */
-            $htmlPartObject = DBField::create_field('HTMLFragment', $htmlPart);
-            $plainPart = $htmlPartObject->Plain();
+        // Render HTML
+        if (!$htmlRender && $htmlTemplate) {
+            $htmlRender = $this->renderWith($htmlTemplate, $tplData);// ->RAW();
         }
 
         // Rendering is finished
         Requirements::restore();
 
-        // Fail if no email to send
-        if (!$plainPart && !$htmlPart) {
-            return $this;
+        // Plain render fallbacks to using the html render with html tags removed
+        if (!$plainRender && $htmlRender) {
+            // call html_entity_decode() to ensure any encoded HTML is also stripped inside ->Plain()
+            $dbField = DBField::create_field('HTMLFragment', html_entity_decode($htmlRender));
+            $plainRender = $dbField->Plain();
         }
 
-        // Build HTML / Plain components
-        if ($htmlPart && !$plainOnly) {
-            $this->setBody($htmlPart);
-            $this->getSwiftMessage()->setContentType('text/html');
-            $this->getSwiftMessage()->setCharset('utf-8');
-            if ($plainPart) {
-                $this->getSwiftMessage()->addPart($plainPart, 'text/plain', 'utf-8');
-            }
-        } else {
-            if ($plainPart) {
-                $this->setBody($plainPart);
-            }
-            $this->getSwiftMessage()->setContentType('text/plain');
-            $this->getSwiftMessage()->setCharset('utf-8');
+        // Handle edge case where no template was found
+        if (!$htmlRender && $htmlBody) {
+            $htmlRender = $htmlBody;
         }
 
-        return $this;
+        if (!$plainRender && $plainBody) {
+            $plainRender = $plainBody;
+        }
+
+        if ($plainRender) {
+            $this->text($plainRender);
+        }
+        if ($htmlRender && !$plainOnly) {
+            $this->html($htmlRender);
+        }
+    }
+
+    public function getCustomisedObj()
+    {
+        return null;
     }
 }

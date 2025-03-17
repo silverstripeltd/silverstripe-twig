@@ -43,7 +43,7 @@ trait TwigRenderer {
      */
     public function renderWith($templates, $customFields = null) {
 
-        $data = ($this->customisedObject) ? $this->customisedObject : $this;
+        $data = $this->getCustomisedObj() ?: $this;
 
         if (is_array($customFields) || $customFields instanceof ViewableData) {
             $data = $data->customise($customFields);
@@ -84,9 +84,10 @@ trait TwigRenderer {
     }
 
     protected function renderTwig($templates, $context) {
-        $render = $this->getTwigTemplate($templates)->render([
-            $this->dic['twig.controller_variable_name'] => $context
-        ]);
+        // MODIFIED
+        $template = $this->getTwigTemplate($templates);
+        $tenplateContext = [$this->dic['twig.controller_variable_name'] => $context];
+        $render = $template->render($tenplateContext);
 
         // inject any 'required' assets in the output, e.g. userforms JS
         if ($this->includeRequirements)
@@ -95,7 +96,13 @@ trait TwigRenderer {
         return $render;
     }
 
+    /**
+     * Prepare the data for passing into the template
+     */
     public function customise($params) {
+        if ($params instanceof ViewableData) {
+            return $params;
+        }
 
         if (is_array($params)) {
             foreach ($params as $key => $value) {
@@ -107,7 +114,6 @@ trait TwigRenderer {
     }
 
     protected function getTwigTemplate($templates) {
-
         $loader = $this->dic['twig.loader'];
         $extensions = $this->dic['twig.extensions'];
         $ret = $this->extend('ModifyTwigTemplates', $templates);
