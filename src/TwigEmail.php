@@ -69,11 +69,11 @@ class TwigEmail extends Email
         $htmlRender = null;
         $plainRender = null;
 
-        if ($htmlBody && !$this->dataHasBeenSet) {
+        if ($htmlBody) {
             $htmlRender = $htmlBody;
         }
 
-        if ($plainBody && !$this->dataHasBeenSet) {
+        if ($plainBody) {
             $plainRender = $plainBody;
         }
 
