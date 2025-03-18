@@ -43,7 +43,7 @@ trait TwigRenderer {
      */
     public function renderWith($templates, $customFields = null) {
 
-        $data = $this->getCustomisedObj() ?: $this;
+        $data = (!$this instanceof TwigEmail && $this->customisedObj) ? $this->customisedObj : $this;
 
         if (is_array($customFields) || $customFields instanceof ViewableData) {
             $data = $data->customise($customFields);
@@ -68,7 +68,7 @@ trait TwigRenderer {
      */
     public function render($params = null) {
 
-        $obj = ($this->customisedObj) ? $this->customisedObj : $this;
+        $obj = (!$this instanceof TwigEmail && $this->customisedObj) ? $this->customisedObj : $this;
         if ($params) {
             $obj = $this->customise($params);
         }
@@ -84,10 +84,9 @@ trait TwigRenderer {
     }
 
     protected function renderTwig($templates, $context) {
-        // MODIFIED
-        $template = $this->getTwigTemplate($templates);
-        $tenplateContext = [$this->dic['twig.controller_variable_name'] => $context];
-        $render = $template->render($tenplateContext);
+        $render = $this->getTwigTemplate($templates)->render([
+            $this->dic['twig.controller_variable_name'] => $context
+        ]);
 
         // inject any 'required' assets in the output, e.g. userforms JS
         if ($this->includeRequirements)
@@ -97,9 +96,12 @@ trait TwigRenderer {
     }
 
     /**
-     * Prepare the data for passing into the template
+     * Prepare the data for passing into the template.
+     *
+     * @param array|ViewableData $params
+     * @return $this|ViewableData
      */
-    public function customise($params) {
+    public function customise(array|ViewableData $params) {
         if ($params instanceof ViewableData) {
             return $params;
         }

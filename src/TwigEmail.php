@@ -33,6 +33,7 @@ class TwigEmail extends Email
         return trim(Director::absoluteBaseURL(), '/') . $path;
     }
 
+
     /**
      * Over-ride the send function so that we can customise the
      * rendering of the email.
@@ -125,8 +126,4 @@ class TwigEmail extends Email
         }
     }
 
-    public function getCustomisedObj()
-    {
-        return null;
-    }
 }
