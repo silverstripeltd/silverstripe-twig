@@ -97,11 +97,8 @@ trait TwigRenderer {
 
     /**
      * Prepare the data for passing into the template.
-     *
-     * @param array|ViewableData $params
-     * @return $this|ViewableData
      */
-    public function customise(array|ViewableData $params) {
+    public function customise($params) {
         if ($params instanceof ViewableData) {
             return $params;
         }
