@@ -2,6 +2,7 @@
 
 namespace Azt3k\SS\Twig;
 
+use AllowDynamicProperties;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;
@@ -24,7 +25,7 @@ use Swift_Message;
 use Swift_MimePart;
 use Symfony\Component\Mailer\MailerInterface;
 
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class TwigEmail extends Email
 {
     use TwigRenderer;

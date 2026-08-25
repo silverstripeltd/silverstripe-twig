@@ -1,8 +1,9 @@
 <?php
 
 namespace Azt3k\SS\Twig;
+use SilverStripe\Model\ModelData;
+use InvalidArgumentException;
 use \SilverStripe\View\Requirements;
-use \SilverStripe\View\ViewableData;
 
 trait TwigRenderer {
 
@@ -45,7 +46,7 @@ trait TwigRenderer {
 
         $data = (!$this instanceof TwigEmail && $this->customisedObj) ? $this->customisedObj : $this;
 
-        if (is_array($customFields) || $customFields instanceof ViewableData) {
+        if (is_array($customFields) || $customFields instanceof ModelData) {
             $data = $data->customise($customFields);
         }
 
@@ -55,7 +56,7 @@ trait TwigRenderer {
 
         try {
             return $this->renderTwig($templates, $data);
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             return parent::renderWith($templates, $customFields);
         }
 
@@ -99,7 +100,7 @@ trait TwigRenderer {
      * Prepare the data for passing into the template.
      */
     public function customise($params) {
-        if ($params instanceof ViewableData) {
+        if ($params instanceof ModelData) {
             return $params;
         }
 
@@ -119,7 +120,7 @@ trait TwigRenderer {
         if(is_array($ret) && count($ret) > 0) $templates = $ret[0];
 
         if(!is_array($templates) || count($templates) == 0) {
-            throw new \InvalidArgumentException("No templates available, perhaps the extension if borked ");
+            throw new InvalidArgumentException("No templates available, perhaps the extension if borked ");
         }
 
         foreach ($templates as $value) {
@@ -148,7 +149,7 @@ trait TwigRenderer {
                 }
             }
         }
-        throw new \InvalidArgumentException("No templates for " . print_r($templates, 1) . " exist");
+        throw new InvalidArgumentException("No templates for " . print_r($templates, 1) . " exist");
     }
 
     /**

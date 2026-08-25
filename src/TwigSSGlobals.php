@@ -2,8 +2,9 @@
 
 namespace Azt3k\SS\Twig;
 
+use SilverStripe\Model\ModelData;
+use LogicException;
 use SilverStripe\Core\ClassInfo;
-use SilverStripe\View\ViewableData;
 use SilverStripe\View\TemplateGlobalProvider;
 
 class TwigSSGlobals
@@ -30,7 +31,7 @@ class TwigSSGlobals
                     if (!is_array($details)) {
                         $details = [
                             'method' => $details,
-                            'casting' => ViewableData::config()->uninherited('default_cast')
+                            'casting' => ModelData::config()->uninherited('default_cast')
                         ];
                     }
 
@@ -90,7 +91,7 @@ class TwigSSGlobals
                 if ($property['callable']) {
                     $inst = $property['callable'][0]->{$property['callable'][1]}();
                 } else {
-                    throw new \LogicException('
+                    throw new LogicException('
                         API for non callable variables is unknown
                     ');
                 }
