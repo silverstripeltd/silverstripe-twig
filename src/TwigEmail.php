@@ -119,10 +119,10 @@ class TwigEmail extends Email
         }
 
         if ($plainRender) {
-            $this->text($plainRender);
+            $this->text((string) $plainRender);
         }
         if ($htmlRender && !$plainOnly) {
-            $this->html($htmlRender);
+            $this->html((string) $htmlRender);
         }
     }
 
