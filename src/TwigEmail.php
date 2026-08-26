@@ -19,7 +19,6 @@ use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\View\Requirements;
 use SilverStripe\View\SSViewer;
 use SilverStripe\View\ThemeResourceLoader;
-use SilverStripe\View\ViewableData;
 use SilverStripe\Control\Director;
 use Swift_Message;
 use Swift_MimePart;
