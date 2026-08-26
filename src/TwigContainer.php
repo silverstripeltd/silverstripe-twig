@@ -2,11 +2,13 @@
 
 namespace Azt3k\SS\Twig;
 
+use SilverStripe\Core\Config\Config;
 use Pimple\Container;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
 
+use SilverStripe\Core\TempFolder;
 class TwigContainer extends Container
 {
     /**
@@ -86,7 +88,7 @@ class TwigContainer extends Container
         };
 
         // Dynamic props
-        $this['twig.compilation_cache'] = TEMP_FOLDER . '/twig-cache';
+        $this['twig.compilation_cache'] = TempFolder::getTempFolder(BASE_PATH) . '/twig-cache';
 
         // create some paths to check
         $actualPaths = [];
@@ -96,7 +98,7 @@ class TwigContainer extends Container
                 '',
                 (
                     THEMES_PATH . '/' .
-                    \SilverStripe\Core\Config\Config::inst()->get(
+                    Config::inst()->get(
                         'SilverStripe\View\SSViewer',
                         'theme'
                     ) .

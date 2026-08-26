@@ -1,8 +1,11 @@
 <?php
 
 namespace Azt3k\SS\Twig;
+use SilverStripe\Model\ModelData;
+use SilverStripe\ORM\FieldType\DBField;
+use SilverStripe\ORM\FieldType\DBHTMLText;
+use InvalidArgumentException;
 use \SilverStripe\View\Requirements;
-use \SilverStripe\View\ViewableData;
 
 trait TwigRenderer {
 
@@ -16,7 +19,7 @@ trait TwigRenderer {
      * @param  [type] $name [description]
      * @return [type]       [description]
      */
-    public function __get($name) {
+    public function __get(string $name): mixed {
 
         if ($name == 'dic') {
             return $this->dic = new TwigContainer;
@@ -30,7 +33,7 @@ trait TwigRenderer {
      * @param  [type]  $name [description]
      * @return boolean       [description]
      */
-    public function __isset($name) {
+    public function __isset(string $name): bool {
 
         return $this->hasMethod($name) ? false : true;
     }
@@ -41,11 +44,11 @@ trait TwigRenderer {
      * @param  [type] $customFields [description]
      * @return [type]               [description]
      */
-    public function renderWith($templates, $customFields = null) {
+    public function renderWith($templates, $customFields = null): DBHTMLText {
 
         $data = (!$this instanceof TwigEmail && $this->customisedObj) ? $this->customisedObj : $this;
 
-        if (is_array($customFields) || $customFields instanceof ViewableData) {
+        if (is_array($customFields) || $customFields instanceof ModelData) {
             $data = $data->customise($customFields);
         }
 
@@ -54,10 +57,12 @@ trait TwigRenderer {
         }
 
         try {
-            return $this->renderTwig($templates, $data);
-        } catch (\InvalidArgumentException $e) {
-            return parent::renderWith($templates, $customFields);
+            $rendered = $this->renderTwig($templates, $data);
+        } catch (InvalidArgumentException $e) {
+            return parent::renderWith($templates, $customFields ?? []);
         }
+
+        return DBField::create_field(DBHTMLText::class, $rendered);
 
     }
 
@@ -66,7 +71,7 @@ trait TwigRenderer {
      * @param  [type] $params [description]
      * @return [type]         [description]
      */
-    public function render($params = null) {
+    public function render($params = null): DBHTMLText {
 
         $obj = (!$this instanceof TwigEmail && $this->customisedObj) ? $this->customisedObj : $this;
         if ($params) {
@@ -77,10 +82,10 @@ trait TwigRenderer {
             ? $this->getAction()
             : null;
 
-        return $this->renderTwig(
+        return DBField::create_field(DBHTMLText::class, $this->renderTwig(
             $this->getTemplateList($action),
             $obj
-        );
+        ));
     }
 
     protected function renderTwig($templates, $context) {
@@ -98,8 +103,8 @@ trait TwigRenderer {
     /**
      * Prepare the data for passing into the template.
      */
-    public function customise($params) {
-        if ($params instanceof ViewableData) {
+    public function customise($params): ModelData {
+        if ($params instanceof ModelData) {
             return $params;
         }
 
@@ -119,7 +124,7 @@ trait TwigRenderer {
         if(is_array($ret) && count($ret) > 0) $templates = $ret[0];
 
         if(!is_array($templates) || count($templates) == 0) {
-            throw new \InvalidArgumentException("No templates available, perhaps the extension if borked ");
+            throw new InvalidArgumentException("No templates available, perhaps the extension if borked ");
         }
 
         foreach ($templates as $value) {
@@ -148,7 +153,7 @@ trait TwigRenderer {
                 }
             }
         }
-        throw new \InvalidArgumentException("No templates for " . print_r($templates, 1) . " exist");
+        throw new InvalidArgumentException("No templates for " . print_r($templates, 1) . " exist");
     }
 
     /**

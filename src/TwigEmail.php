@@ -2,6 +2,7 @@
 
 namespace Azt3k\SS\Twig;
 
+use AllowDynamicProperties;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;
@@ -18,13 +19,12 @@ use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\View\Requirements;
 use SilverStripe\View\SSViewer;
 use SilverStripe\View\ThemeResourceLoader;
-use SilverStripe\View\ViewableData;
 use SilverStripe\Control\Director;
 use Swift_Message;
 use Swift_MimePart;
 use Symfony\Component\Mailer\MailerInterface;
 
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class TwigEmail extends Email
 {
     use TwigRenderer;
@@ -119,10 +119,10 @@ class TwigEmail extends Email
         }
 
         if ($plainRender) {
-            $this->text($plainRender);
+            $this->text((string) $plainRender);
         }
         if ($htmlRender && !$plainOnly) {
-            $this->html($htmlRender);
+            $this->html((string) $htmlRender);
         }
     }
 

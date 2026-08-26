@@ -6,7 +6,7 @@ trait TwigController {
 
     use TwigRenderer;
 
-    public function __get($name)
+    public function __get(string $name): mixed
     {
         if ($name == 'dic') {
             return $this->dic = new TwigContainer;
@@ -15,7 +15,7 @@ trait TwigController {
         }
     }
 
-    public function __isset($name)
+    public function __isset(string $name): bool
     {
         return $this->hasMethod($name) ? false : true;
     }
